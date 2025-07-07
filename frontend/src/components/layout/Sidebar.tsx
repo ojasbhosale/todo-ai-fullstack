@@ -6,13 +6,10 @@ import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   CheckSquare,
-  Calendar,
+  
   MessageSquare,
   BarChart3,
-  Settings,
-  Plus,
   Brain,
-  Tag,
   X,
 } from 'lucide-react';
 
@@ -29,9 +26,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     { name: 'Tasks', href: '/tasks', icon: CheckSquare },
     { name: 'AI Assistant', href: '/ai-assistant', icon: Brain },
     { name: 'Context', href: '/context', icon: MessageSquare },
-    { name: 'Categories', href: '/categories', icon: Tag },
-    { name: 'Calendar', href: '/calendar', icon: Calendar },
-    { name: 'Settings', href: '/settings', icon: Settings },
+    
+    
   ];
 
   return (
@@ -72,16 +68,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Quick Add Button */}
-          <div className="p-4">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={onClose}
-              className="w-full flex items-center justify-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Quick Add Task
-            </motion.button>
+          <div className="p-8">
+            
           </div>
 
           {/* Navigation */}
