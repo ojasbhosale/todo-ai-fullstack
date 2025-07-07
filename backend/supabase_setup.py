@@ -1,3 +1,4 @@
+
 """
 Supabase setup script for creating tables and Row Level Security (RLS) policies.
 
@@ -6,7 +7,7 @@ for the Smart Todo List application in Supabase using FastAPI models.
 """
 import asyncio
 import logging
-from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from app.core.config import settings
 from app.core.database import Base
 from app.models.task import Task
@@ -20,10 +21,16 @@ logger = logging.getLogger(__name__)
 async def create_tables():
     """Create all database tables."""
     try:
-        # Convert PostgreSQL URL to async version
-        database_url = settings.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://")
-        
-        engine = create_async_engine(database_url, echo=True)
+        # Use the same DATABASE_URL from settings (already has postgresql+asyncpg://)
+        engine = create_async_engine(
+            settings.DATABASE_URL,
+            echo=True,
+            # Disable prepared statement caching to work with pgbouncer transaction pooler
+            connect_args={
+                "statement_cache_size": 0,
+                "prepared_statement_cache_size": 0
+            }
+        )
         
         async with engine.begin() as conn:
             # Create all tables
@@ -40,10 +47,14 @@ async def create_tables():
 async def create_sample_data():
     """Create sample data for testing."""
     try:
-        from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
-        
-        database_url = settings.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://")
-        engine = create_async_engine(database_url)
+        engine = create_async_engine(
+            settings.DATABASE_URL,
+            # Disable prepared statement caching to work with pgbouncer transaction pooler
+            connect_args={
+                "statement_cache_size": 0,
+                "prepared_statement_cache_size": 0
+            }
+        )
         AsyncSessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
         
         async with AsyncSessionLocal() as session:

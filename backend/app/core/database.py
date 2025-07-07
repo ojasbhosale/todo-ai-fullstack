@@ -1,3 +1,4 @@
+
 """
 Database configuration and session management.
 """
@@ -12,17 +13,18 @@ logger = logging.getLogger(__name__)
 # No need to modify DATABASE_URL if it's already correct in .env
 DATABASE_URL = settings.DATABASE_URL
 
-# Create async engine without SSL
+# Create async engine with statement cache disabled for pgbouncer compatibility
 engine = create_async_engine(
     DATABASE_URL,
     echo=settings.DEBUG,
     pool_pre_ping=True,
     pool_recycle=300,
-    # Remove or comment out connect_args
-    # connect_args={"ssl": ssl.create_default_context()}
+    # Disable prepared statement caching to work with pgbouncer transaction pooler
+    connect_args={
+        "statement_cache_size": 0,
+        "prepared_statement_cache_size": 0
+    }
 )
-
-
 
 # Create async session factory
 AsyncSessionLocal = async_sessionmaker(
@@ -34,7 +36,7 @@ AsyncSessionLocal = async_sessionmaker(
 
 class Base(DeclarativeBase):
     """Base class for all database models."""
-    pass  # No need to define metadata manually
+    pass
 
 
 async def get_db() -> AsyncSession:
