@@ -21,8 +21,7 @@ engine = create_async_engine(
     pool_recycle=300,
     # Disable prepared statement caching to work with pgbouncer transaction pooler
     connect_args={
-        "statement_cache_size": 0,
-        "prepared_statement_cache_size": 0
+        "statement_cache_size": 0
     }
 )
 
