@@ -30,12 +30,14 @@ export interface TaskUpdate extends Partial<TaskCreate> {
   context_references?: string[];
 }
 
+import React from 'react';
+
 export interface ContextEntry {
   id: string;
   content: string;
   source_type: 'email' | 'whatsapp' | 'notes' | 'calendar';
-  processed_insights: Record<string, any>;
-  metadata: Record<string, any>;
+  processed_insights: Record<string, React.ReactNode>;
+  metadata: Record<string, React.ReactNode>;
   is_processed: boolean;
   relevance_score: number;
   extracted_keywords: string[];
@@ -46,7 +48,7 @@ export interface ContextEntry {
 export interface ContextEntryCreate {
   content: string;
   source_type: 'email' | 'whatsapp' | 'notes' | 'calendar';
-  metadata?: Record<string, any>;
+  metadata?: Record<string, React.ReactNode>;
 }
 
 export interface Category {
