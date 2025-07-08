@@ -17,9 +17,14 @@ export const useCategories = () => {
       const data = await categoriesApi.getAll(params);
       setCategories(data);
       setError(null);
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch categories');
-      toast.error('Failed to fetch categories');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+        toast.error(err.message);
+      } else {
+        setError('Failed to fetch categories');
+        toast.error('Failed to fetch categories');
+      }
     } finally {
       setLoading(false);
     }
@@ -31,8 +36,12 @@ export const useCategories = () => {
       setCategories(prev => [newCategory, ...prev]);
       toast.success('Category created successfully!');
       return newCategory;
-    } catch (err: any) {
-      toast.error('Failed to create category');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error('Failed to create category');
+      }
       throw err;
     }
   };
@@ -43,8 +52,12 @@ export const useCategories = () => {
       setCategories(prev => prev.map(cat => cat.id === id ? updatedCategory : cat));
       toast.success('Category updated successfully!');
       return updatedCategory;
-    } catch (err: any) {
-      toast.error('Failed to update category');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error('Failed to update category');
+      }
       throw err;
     }
   };
@@ -54,8 +67,12 @@ export const useCategories = () => {
       await categoriesApi.delete(id);
       setCategories(prev => prev.filter(cat => cat.id !== id));
       toast.success('Category deleted successfully!');
-    } catch (err: any) {
-      toast.error('Failed to delete category');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error('Failed to delete category');
+      }
       throw err;
     }
   };

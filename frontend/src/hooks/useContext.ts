@@ -18,9 +18,14 @@ export const useContext = () => {
       const data = await contextApi.getAll(params);
       setEntries(data);
       setError(null);
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch context entries');
-      toast.error('Failed to fetch context entries');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+        toast.error(err.message);
+      } else {
+        setError('Failed to fetch context entries');
+        toast.error('Failed to fetch context entries');
+      }
     } finally {
       setLoading(false);
     }
@@ -32,8 +37,12 @@ export const useContext = () => {
       setEntries(prev => [newEntry, ...prev]);
       toast.success('Context entry added successfully!');
       return newEntry;
-    } catch (err: any) {
-      toast.error('Failed to add context entry');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error('Failed to add context entry');
+      }
       throw err;
     }
   };
@@ -44,8 +53,12 @@ export const useContext = () => {
       setEntries(prev => prev.map(entry => entry.id === id ? updatedEntry : entry));
       toast.success('Context entry updated successfully!');
       return updatedEntry;
-    } catch (err: any) {
-      toast.error('Failed to update context entry');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error('Failed to update context entry');
+      }
       throw err;
     }
   };
@@ -55,8 +68,12 @@ export const useContext = () => {
       await contextApi.delete(id);
       setEntries(prev => prev.filter(entry => entry.id !== id));
       toast.success('Context entry deleted successfully!');
-    } catch (err: any) {
-      toast.error('Failed to delete context entry');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error('Failed to delete context entry');
+      }
       throw err;
     }
   };
@@ -67,8 +84,12 @@ export const useContext = () => {
   }) => {
     try {
       return await contextApi.analyze(data);
-    } catch (err: any) {
-      toast.error('Failed to analyze content');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error('Failed to analyze content');
+      }
       throw err;
     }
   };

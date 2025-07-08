@@ -19,9 +19,14 @@ export const useTasks = () => {
       const data = await tasksApi.getAll(params);
       setTasks(data);
       setError(null);
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch tasks');
-      toast.error('Failed to fetch tasks');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+        toast.error(err.message);
+      } else {
+        setError('Failed to fetch tasks');
+        toast.error('Failed to fetch tasks');
+      }
     } finally {
       setLoading(false);
     }
@@ -33,8 +38,12 @@ export const useTasks = () => {
       setTasks(prev => [newTask, ...prev]);
       toast.success('Task created successfully!');
       return newTask;
-    } catch (err: any) {
-      toast.error('Failed to create task');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error('Failed to create task');
+      }
       throw err;
     }
   };
@@ -45,8 +54,12 @@ export const useTasks = () => {
       setTasks(prev => prev.map(task => task.id === id ? updatedTask : task));
       toast.success('Task updated successfully!');
       return updatedTask;
-    } catch (err: any) {
-      toast.error('Failed to update task');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error('Failed to update task');
+      }
       throw err;
     }
   };
@@ -56,8 +69,12 @@ export const useTasks = () => {
       await tasksApi.delete(id);
       setTasks(prev => prev.filter(task => task.id !== id));
       toast.success('Task deleted successfully!');
-    } catch (err: any) {
-      toast.error('Failed to delete task');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error('Failed to delete task');
+      }
       throw err;
     }
   };
@@ -72,8 +89,12 @@ export const useTasks = () => {
         ...data,
         current_workload: tasks.filter(t => t.status === 'pending').length,
       });
-    } catch (err: any) {
-      toast.error('Failed to get AI suggestions');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error('Failed to get AI suggestions');
+      }
       throw err;
     }
   };
@@ -103,8 +124,12 @@ export const useTaskStatistics = () => {
       try {
         const data = await tasksApi.getStatistics();
         setStatistics(data);
-      } catch (err) {
-        console.error('Failed to fetch statistics:', err);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error('Failed to fetch statistics:', err.message);
+        } else {
+          console.error('Failed to fetch statistics:', err);
+        }
       } finally {
         setLoading(false);
       }
