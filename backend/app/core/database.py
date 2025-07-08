@@ -1,6 +1,3 @@
-"""
-Database configuration and session management.
-"""
 import logging
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
@@ -13,33 +10,34 @@ logger = logging.getLogger(__name__)
 
 DATABASE_URL = settings.DATABASE_URL
 
-# Create async engine — PgBouncer-safe: No statement caching, no connection pooling
+# Create async engine - fully PgBouncer compatible
 engine = create_async_engine(
     DATABASE_URL,
     echo=settings.DEBUG,
     connect_args={
-        "statement_cache_size": 0,  # This disables asyncpg's prepared statements
+        "statement_cache_size": 0,  # Disable asyncpg statement caching
         "server_settings": {
             "application_name": "fastapi_app",
             "jit": "off",
         },
     },
-    poolclass=NullPool,  # Disable SQLAlchemy's connection pool (use PgBouncer instead)
+    poolclass=NullPool,  # Disable SQLAlchemy's own pooling
+    hide_parameters=True,  # Hides parameters in logs (security + avoids version checks)
 )
 
 # Async session factory
 AsyncSessionLocal = async_sessionmaker(
-    engine,
+    bind=engine,
     class_=AsyncSession,
     expire_on_commit=False,
 )
 
 class Base(DeclarativeBase):
-    """Base class for all database models."""
+    """Base class for all models."""
     pass
 
 async def get_db() -> AsyncSession:
-    """Dependency to get a database session."""
+    """Yield an async database session."""
     async with AsyncSessionLocal() as session:
         try:
             yield session
@@ -51,28 +49,26 @@ async def get_db() -> AsyncSession:
             await session.close()
 
 async def create_tables():
-    """Create all database tables safely (PgBouncer-friendly)."""
+    """Create all tables safely, without prepared statements."""
     try:
-        # Import models to register them
         from app.models.task import Task
         from app.models.context_entry import ContextEntry
         from app.models.category import Category
 
         async with engine.begin() as conn:
-            # Remove any initial version check: instead run explicit text query
-            await conn.execute(text("SELECT 1"))  
+            await conn.execute(text("SELECT 1"))  # Simple safe query
             await conn.run_sync(Base.metadata.create_all)
             logger.info("Database tables created successfully")
     except Exception as e:
-        logger.error(f"Error creating database tables: {e}")
-        logger.info("Continuing startup despite table creation error")
+        logger.error(f"Error creating tables: {e}")
+        logger.info("Continuing startup despite error")
 
 async def test_connection():
-    """Test database connectivity (PgBouncer-safe)."""
+    """Test DB connection with PgBouncer-safe query."""
     try:
         async with engine.begin() as conn:
-            await conn.execute(text("SELECT 1"))  # raw text avoids prepared statements
-            logger.info("Database connection test successful")
+            await conn.execute(text("SELECT 1"))
+            logger.info("Database connection test passed")
             return True
     except Exception as e:
         logger.error(f"Database connection test failed: {e}")
