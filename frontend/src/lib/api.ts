@@ -67,8 +67,8 @@ export const tasksApi = {
     title: string;
     description?: string;
     category?: string;
-    context_data?: any[];
-    user_preferences?: Record<string, any>;
+    context_data?: unknown[];
+    user_preferences?: Record<string, unknown>;
     current_workload?: number;
   }) => {
     const response = await api.post<AITaskSuggestion>('/tasks/ai-suggestions/', data);
