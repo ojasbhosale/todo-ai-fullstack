@@ -21,11 +21,11 @@ import Select from '@/components/ui/Select';
 import Badge from '@/components/ui/Badge';
 import Modal from '@/components/ui/Modal';
 import { useContext } from '@/hooks/useContext';
-import { ContextEntry, ContextEntryCreate } from '@/types';
+import { ContextEntryCreate } from '@/types';
 import { format } from 'date-fns';
 
 export default function ContextPage() {
-  const { entries, loading, createEntry, deleteEntry, analyzeContent } = useContext();
+  const { entries, loading, createEntry, deleteEntry } = useContext();
   
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -387,7 +387,7 @@ export default function ContextPage() {
           <Select
             label="Source Type"
             value={formData.source_type}
-            onChange={(e) => setFormData(prev => ({ ...prev, source_type: e.target.value as any }))}
+            onChange={(e) => setFormData(prev => ({ ...prev, source_type: e.target.value as 'email' | 'whatsapp' | 'notes' | 'calendar' }))}
             options={sourceTypeOptions}
           />
 

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
-import { Sparkles, Calendar, Tag, AlertCircle } from 'lucide-react';
+import { Sparkles, AlertCircle } from 'lucide-react';
 import { Task, TaskCreate, AITaskSuggestion } from '@/types';
 import { useCategories } from '@/hooks/useCategories';
 import { useTasks } from '@/hooks/useTasks';
@@ -67,7 +67,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
     setShowAISuggestions(false);
   }, [task, isOpen]);
 
-  const handleInputChange = (field: keyof TaskCreate, value: any) => {
+  const handleInputChange = (field: keyof TaskCreate, value: string | number | null) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -190,7 +190,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
 
           <Select
             label="Priority"
-            value={formData.priority_score.toString()}
+            value={(formData.priority_score ?? 5).toString()}
             onChange={(e) => handleInputChange('priority_score', parseInt(e.target.value))}
             options={priorityOptions}
           />

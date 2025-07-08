@@ -21,7 +21,7 @@ import Button from '@/components/ui/Button';
 import Select from '@/components/ui/Select';
 import { useTasks, useTaskStatistics } from '@/hooks/useTasks';
 import { useCategories } from '@/hooks/useCategories';
-import { Task } from '@/types';
+import { Task, TaskCreate } from '@/types';
 
 export default function Dashboard() {
   const { tasks, loading, createTask, updateTask, deleteTask } = useTasks();
@@ -47,13 +47,13 @@ export default function Dashboard() {
 
   const recentTasks = filteredTasks.slice(0, 6);
 
-  const handleCreateTask = async (taskData: any) => {
-    await createTask(taskData);
+  const handleCreateTask = (taskData: TaskCreate) => {
+    createTask(taskData);
   };
 
-  const handleUpdateTask = async (taskData: any) => {
+  const handleUpdateTask = (taskData: TaskCreate) => {
     if (selectedTask) {
-      await updateTask(selectedTask.id, taskData);
+      updateTask(selectedTask.id, taskData);
       setSelectedTask(null);
     }
   };
@@ -105,7 +105,7 @@ export default function Dashboard() {
               Dashboard
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              Welcome back! Here's your task overview.
+              Welcome back! Here&#39;s your task overview.
             </p>
           </div>
           <Button
@@ -159,7 +159,7 @@ export default function Dashboard() {
           >
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4 flex items-center">
               <Calendar className="w-5 h-5 mr-2" />
-              Today's Focus
+              Today&#39;s Focus
             </h3>
             <div className="space-y-3">
               <div className="flex justify-between">

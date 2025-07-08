@@ -21,9 +21,10 @@ import Select from '@/components/ui/Select';
 import { useTasks } from '@/hooks/useTasks';
 import { useCategories } from '@/hooks/useCategories';
 import { Task } from '@/types';
+import { TaskCreate } from '@/types';
 
 export default function TasksPage() {
-  const { tasks, loading, createTask, updateTask, deleteTask, fetchTasks } = useTasks();
+  const { tasks, loading, createTask, updateTask, deleteTask } = useTasks();
   const { categories } = useCategories();
   
   const [selectedTask, setSelectedTask] = React.useState<Task | null>(null);
@@ -39,7 +40,7 @@ export default function TasksPage() {
   const [sortBy, setSortBy] = React.useState('created_at');
 
   const filteredTasks = React.useMemo(() => {
-    let filtered = tasks.filter(task => {
+    const filtered = tasks.filter(task => {
       // Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
@@ -86,13 +87,15 @@ export default function TasksPage() {
     return filtered;
   }, [tasks, searchQuery, filters, sortBy]);
 
-  const handleCreateTask = async (taskData: any) => {
-    await createTask(taskData);
+  
+
+  const handleCreateTask = (taskData: TaskCreate) => {
+    createTask(taskData);
   };
 
-  const handleUpdateTask = async (taskData: any) => {
+  const handleUpdateTask = (taskData: TaskCreate) => {
     if (selectedTask) {
-      await updateTask(selectedTask.id, taskData);
+      updateTask(selectedTask.id, taskData);
       setSelectedTask(null);
     }
   };

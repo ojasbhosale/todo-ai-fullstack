@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Menu, Search, Bell, Moon, Sun, User } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
