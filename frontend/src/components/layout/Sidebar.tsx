@@ -24,7 +24,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const navigation = [
     { name: 'Dashboard', href: '/', icon: BarChart3 },
     { name: 'Tasks', href: '/tasks', icon: CheckSquare },
-    { name: 'AI Assistant', href: '/ai-assistant', icon: Brain },
     { name: 'Context', href: '/context', icon: MessageSquare },
     
     
